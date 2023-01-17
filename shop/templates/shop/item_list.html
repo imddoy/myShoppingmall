@@ -1,0 +1,112 @@
+{% extends 'shop/base.html' %}
+{% block main_area %}
+    {% if user.is_authenticated %}
+        {% if user.is_superuser or user.is_staff %}
+    <a class="btn btn-outline-secondary float-right" href="/shop/create_item/" role="button" style="font-family: 'Merriweather', serif; font-family: 'Tinos', serif;">
+        <i class="fa-solid fa-cloud-arrow-up"></i> Upload Item</a>
+        {% endif %}
+    {% endif %}
+
+    <h2 style="font-family: 'Merriweather', serif; font-family: 'Tinos', serif;">Shop
+        {% if category %}
+        - <span class="badge" style="border-radius: 50px; background:#F07878">{{category}}</span>
+        {% endif %}
+        {% if company %}
+        - <span class="badge" style="border-radius: 50px; background:#F07878">{{company}}</span>
+        {% endif %}
+        {% if tag %}
+        - <span class="badge" style="border-radius: 50px; background:#F07878"><i class="fas fa-hashtag"></i> {{tag}} ({{tag.item_set.count}})</span>
+        {% endif %}
+    </h2>
+
+    {% if category or tag or company %}
+    {% else %}
+    <div class="container" >
+        <h3 style="font-family: 'Merriweather', serif; font-family: 'Tinos', serif;">
+        <a class="badge" style="border-radius: 50px; background: salmon;" href="/shop/hot">
+            <i class="fa-solid fa-fire" ></i> Hot Item
+        </a>
+        </h3>
+    </div>
+    {% endif %}
+
+    <div class="container" >
+            <div class="row">
+                <div class="col-12">
+                    <h3 style="font-family: 'Merriweather', serif; font-family: 'Tinos', serif;"><i class="fa-solid fa-basket-shopping" style="color: salmon;" ></i> Item</h3>
+                </div>
+            </div>
+
+            <div class="row">
+                {% if item_list.exists %}
+                {% for p in item_list %}
+                <div class="col-4">
+                    <div class="card text-center" style="width: 18rem; margin-bottom: 4em;">
+                      <img src="{{p.image.url}}" class="card-img-top" alt="{{p.title}}의 image">
+                      <div class="card-body">
+                        <h6 class="card-title" style="font-weight: bold;">{{p.title}}</h6>
+                        <p class="card-text" style="font-size: 15px;">{{p.hook_text}}<br>판매 가격 : {{p.price}}원</p>
+                        {% if p.tags.exists %}
+                        <i class="fas fa-hashtag"></i>
+                            {% for t in p.tags.iterator %}
+                                <span class="badge badge-pill badge-secondary">
+                                    <a href="{{t.get_absolute_url}}" style="color: white; text-decoration: none;">{{t}}</a>
+                                </span>
+                            {% endfor %}
+                        <br>
+                        {% endif %}
+                        <p class="badge badge-light">
+                            <a href="{{p.category.get_absolute_url}}" style="color: salmon; text-decoration: none;">
+                                {{p.category}}
+                            </a>
+                        </p>
+                          <br>
+                        <a class="btn btn" style="background: #F07878; color: white;" href="{{p.get_absolute_url}}">Read more →</a>
+                        <div style="float: right;">
+                            {% if user in p.like_users.all %}
+                            <i class="fas fa-heart" style="color: #F07878; margin: 0.6em 0em 0.6em -3.8em;"></i>
+                            {% else %}
+                            <i class="far fa-heart" style="color: #F07878; margin: 0.6em 0em 0.6em -3.8em;"></i>
+                            {% endif %}
+                            <span style="margin: 0.6em 2em 0.6em -0.1em; color: salmon;">{{p.like_users.count}}</span>
+                        </div>
+                        </div>
+
+<!--                         <form action="{ url 'likes' p.pk %}" method='POST'>-->
+<!--                            {% csrf_token %}-->
+<!--                            {% if user in p.like_users.all %}-->
+<!--                              <input type="submit" value='좋아요 취소'>-->
+<!--                            {% else %}-->
+<!--                              <input type="submit" value='좋아요'>-->
+<!--                            {% endif %}-->
+<!--                          </form>-->
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div style="margin: 17.3em 0em 20.5em 0em;">
+                    <h1 style="font-family: 'Merriweather', serif; font-family: 'Tinos', serif; text-align: center;"  >Does Not Exist</h1>
+                </div>
+                {% endif %}
+            </div>
+    </div>
+
+    <!-- Pagination-->
+    {% if is_paginated %}
+    <nav aria-label="Pagination">
+<!--        <hr class="my-0" />-->
+        <ul class="pagination justify-content-center my-4">
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{page_obj.previous_page_number}}" tabindex="-1" aria-disabled="true">Newer</a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a></li>
+            {% endif %}
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{page_obj.next_page_number}}">Older</a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#!">Older</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+{% endblock %}

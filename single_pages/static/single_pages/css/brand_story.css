@@ -1,0 +1,32 @@
+.gradient-border {
+    width: 100%;
+    height: 100%;
+    --borderWidth: 3px;
+    color: white;
+}
+.gradient-border:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: calc(100%);
+    width: calc(100%);
+    background: linear-gradient(120deg, #f9f263, #f79533,  #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+    z-index: 1;
+    animation: animatedgradient 3s ease alternate infinite;
+    background-size: 300% 300%;
+    padding: 0;
+}
+
+
+@keyframes animatedgradient {
+0% {
+  background-position: 0% 50%;
+}
+50% {
+  background-position: 100% 50%;
+}
+100% {
+  background-position: 0% 50%;
+}
+}

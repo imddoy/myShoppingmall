@@ -1,0 +1,21 @@
+{% extends 'shop/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}
+    Upload Item - Blog
+{% endblock %}
+
+{% block main_area %}
+    <h1>Upload a New Item</h1>
+    <hr/>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+            {{form | crispy}}
+            <div id="div_id_tags_str">
+                <label for="id_tags">Tags:</label>
+                <input id="id_tags" type="text" name="tags_str" class="textinput textInput form-control">
+            </div>
+        <button type="submit" class="btn btn-primary float-right">Submit</button>
+    </form>
+    {{form.media}}
+{% endblock %}
